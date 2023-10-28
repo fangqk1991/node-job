@@ -4,8 +4,8 @@ import { WebApp } from '@fangcha/backend-kit/lib/router'
 import { SsoSdkPlugin } from '@fangcha/web-auth-sdk'
 import { UserSdkPlugin } from '@fangcha/user-sdk'
 import { MyDatabase } from '../services/MyDatabase'
-import { JobWebPlugin } from '@fangcha/job-sdk/web-sdk'
 import { CommonJob } from '../models/CommonJob'
+import { JobWebPlugin } from '@fangcha/job-sdk'
 
 const app = new WebApp({
   env: GlobalAppConfig.Env,
