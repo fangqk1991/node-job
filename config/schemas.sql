@@ -1,6 +1,6 @@
-# CREATE DATABASE `general_data` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+# CREATE DATABASE `task_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-USE general_data;
+USE task_db;
 
 CREATE TABLE IF NOT EXISTS common_job
 (
