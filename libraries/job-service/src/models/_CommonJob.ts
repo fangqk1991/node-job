@@ -1,8 +1,8 @@
 import { ResqueJob } from '@fangcha/resque'
 import { DBProtocolV2, FCDatabase, Transaction } from 'fc-sql'
 import * as moment from 'moment'
-import { DBObserver, FeedBase } from 'fc-feed'
-import { CommonJobState } from '@fangcha/job-models'
+import { DBObserver, FeedBase, FilterOptions } from 'fc-feed'
+import { CommonJobModel, CommonJobState } from '@fangcha/job-models'
 
 const dbOptions = {
   table: 'common_job',
@@ -21,7 +21,7 @@ const dbOptions = {
     'create_time',
     'update_time',
   ],
-  insertableCols:  [
+  insertableCols: [
     'job_id',
     'app',
     'queue',
@@ -33,13 +33,7 @@ const dbOptions = {
     'perform_elapsed',
     'error_message',
   ],
-  modifiableCols: [
-    'object_id',
-    'task_state',
-    'pending_elapsed',
-    'perform_elapsed',
-    'error_message',
-  ],
+  modifiableCols: ['object_id', 'task_state', 'pending_elapsed', 'perform_elapsed', 'error_message'],
 }
 
 class __CommonJob extends FeedBase {
@@ -238,5 +232,29 @@ export class _CommonJob extends __CommonJob {
     this.fc_edit()
     this.objectId = objectId
     await this.updateToDB()
+  }
+
+  public fc_searcher(params: FilterOptions = {}) {
+    const searcher = super.fc_searcher(params)
+    searcher.processor().addOrderRule('_rid', 'DESC')
+    return searcher
+  }
+
+  public params(): any {
+    const defaultData = {}
+    try {
+      return JSON.parse(this.paramsStr) || defaultData
+    } catch (e) {}
+    return defaultData
+  }
+
+  public toJSON() {
+    return this.modelForClient()
+  }
+
+  public modelForClient() {
+    const data = this.fc_pureModel() as CommonJobModel
+    data.params = this.params()
+    return data
   }
 }
