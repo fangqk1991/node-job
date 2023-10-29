@@ -1,11 +1,12 @@
 import { SpecFactory } from '@fangcha/router'
 import { CommonJobApis } from '@fangcha/job-models'
-import { _CommonJob } from '@fangcha/job'
+import { JobServer } from '@fangcha/job'
 
 const factory = new SpecFactory('Common Job')
 
 factory.prepare(CommonJobApis.JobPageDataGet, async (ctx) => {
-  const CommonJob = ctx.CommonJob as typeof _CommonJob
+  const jobServer = ctx.jobServer as JobServer
+  const CommonJob = jobServer.CommonJob
   ctx.body = await CommonJob.getPageResult(ctx.request.query)
 })
 

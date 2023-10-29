@@ -1,2 +1,2 @@
 export * from './models/_CommonJob'
-export * from './GeneralJobService'
+export * from './JobServer'

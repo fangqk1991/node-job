@@ -1,10 +1,10 @@
 import { AppPluginProtocol } from '@fangcha/backend-kit'
 import { _RouterState } from '@fangcha/backend-kit/lib/router'
 import { CommonJobSpecs } from './CommonJobSpecs'
-import { _CommonJob } from '@fangcha/job'
+import { JobServer } from '@fangcha/job'
 
 export interface JobWebOptions {
-  CommonJob: typeof _CommonJob & { new (): _CommonJob }
+  jobServer: JobServer
 }
 
 export const JobWebPlugin = (options: JobWebOptions): AppPluginProtocol => {
@@ -17,7 +17,7 @@ export const JobWebPlugin = (options: JobWebOptions): AppPluginProtocol => {
         specs: CommonJobSpecs,
       })
       routerApp.addMiddlewareBeforeInit(async (ctx, next) => {
-        ctx.CommonJob = options.CommonJob
+        ctx.jobServer = options.jobServer
         await next()
       })
     },

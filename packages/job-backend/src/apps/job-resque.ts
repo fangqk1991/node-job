@@ -2,8 +2,8 @@ import { FangchaApp } from '@fangcha/backend-kit'
 import { GlobalAppConfig } from 'fc-config'
 import { JobConfig } from '../JobConfig'
 import { TaskResqueTaskMapper } from './resque'
-import { CommonJob } from '../models/CommonJob'
-import { ResqueObserverHelper, ResqueSdkPlugin } from '@fangcha/resque-sdk'
+import { ResqueSdkPlugin } from '@fangcha/resque-sdk'
+import { MyJobServer } from '../services/MyJobServer'
 
 const app = new FangchaApp({
   env: GlobalAppConfig.Env,
@@ -15,7 +15,7 @@ const app = new FangchaApp({
       redisConfig: JobConfig.jobResque,
       queues: ['HighPriorityQueue', 'NormalPriorityQueue', 'LowPriorityQueue', ...JobConfig.jobResque.dynamicQueues],
       moduleMapData: TaskResqueTaskMapper,
-      observer: ResqueObserverHelper.makeTypicalObserver(CommonJob),
+      jobServer: MyJobServer,
     }),
   ],
 })

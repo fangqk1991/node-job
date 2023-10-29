@@ -1,6 +1,6 @@
 import { Resque, ResqueJob } from '@fangcha/resque'
 import { JobConfig } from '../JobConfig'
-import { CommonJob } from '../models/CommonJob'
+import { MyJobServer } from './MyJobServer'
 
 Resque.setRedisBackend(JobConfig.jobResque)
 
@@ -11,6 +11,6 @@ export class JobResque {
 
   public static async enqueue_SomeTask() {
     const resqueJob = ResqueJob.generate('NormalPriorityQueue', 'SomeTask')
-    return CommonJob.saveResqueJobAndEnqueue(resqueJob)
+    return MyJobServer.CommonJob.saveResqueJobAndEnqueue(resqueJob)
   }
 }

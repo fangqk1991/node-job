@@ -1,5 +1,5 @@
 import { IResqueObserver, RedisConfig } from '@fangcha/resque'
-import { FCDatabase } from 'fc-sql'
+import { JobServer } from '@fangcha/job'
 
 export interface ResqueProtocol {
   redisConfig: RedisConfig
@@ -8,6 +8,5 @@ export interface ResqueProtocol {
     [p: string]: any
   }
   observer?: IResqueObserver
-  jobAppName?: string
-  jobDatabase?: FCDatabase
+  jobServer?: JobServer
 }
