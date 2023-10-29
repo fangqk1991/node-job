@@ -2,8 +2,17 @@ import { IResqueObserver, ResqueJob, ResqueWorker } from '@fangcha/resque'
 import { _FangchaState } from '@fangcha/backend-kit'
 import { _CommonJob } from '@fangcha/job'
 
+interface Options {
+  muteTaskNames?: string[]
+}
+
 export class ResqueObserverHelper {
-  public static makeDefaultObserver(): IResqueObserver {
+  public static makeDefaultObserver(options: Options = {}): IResqueObserver {
+    const muteTaskMapper = (options.muteTaskNames || []).reduce((result, cur) => {
+      result[cur] = true
+      return result
+    }, {} as { [p: string]: boolean })
+
     return {
       onMasterLaunched: () => {},
       onWorkerStart: (_worker: ResqueWorker) => {},
@@ -11,13 +20,11 @@ export class ResqueObserverHelper {
       onJobDone: (_resqueJob: ResqueJob) => {},
       onJobFailed: async (resqueJob: ResqueJob, e: Error) => {
         console.error(resqueJob, e)
-        const infos = [
-          'Resque Job Fail',
-          `Queue: ${resqueJob.queue}`,
-          `Job: ${resqueJob.getClassName()}`,
-          `Error: ${e.message}`,
-        ]
-        _FangchaState.botProxy.notify(infos.join('\n'))
+        const taskName = resqueJob.getClassName()
+        const infos = ['Resque Job Fail', `Queue: ${resqueJob.queue}`, `Job: ${taskName}`, `Error: ${e.message}`]
+        if (!muteTaskMapper[taskName]) {
+          _FangchaState.botProxy.notify(infos.join('\n'))
+        }
       },
       onJobPerform: (_: ResqueJob) => {},
       onRedisConnectionError: (e: Error) => {
@@ -27,9 +34,14 @@ export class ResqueObserverHelper {
     }
   }
 
-  public static makeTypicalObserver(CommonJob: typeof _CommonJob): IResqueObserver {
+  public static makeTypicalObserver(CommonJob: typeof _CommonJob, options: Options = {}): IResqueObserver {
     let stoppingBeginTs = 0
     let lastAlertTs = 0
+
+    const muteTaskMapper = (options.muteTaskNames || []).reduce((result, cur) => {
+      result[cur] = true
+      return result
+    }, {} as { [p: string]: boolean })
 
     return {
       onMasterLaunched: () => {},
@@ -41,13 +53,11 @@ export class ResqueObserverHelper {
         await CommonJob.onResqueJobDone(resqueJob)
       },
       onJobFailed: async (resqueJob: ResqueJob, e: Error) => {
-        const infos = [
-          'Resque Job Fail',
-          `Queue: ${resqueJob.queue}`,
-          `Job: ${resqueJob.getClassName()}`,
-          `Error: ${e.message}`,
-        ]
-        _FangchaState.botProxy.notify(infos.join('\n'))
+        const taskName = resqueJob.getClassName()
+        const infos = ['Resque Job Fail', `Queue: ${resqueJob.queue}`, `Job: ${taskName}`, `Error: ${e.message}`]
+        if (!muteTaskMapper[taskName]) {
+          _FangchaState.botProxy.notify(infos.join('\n'))
+        }
         console.error(resqueJob, e)
         await CommonJob.onResqueJobFailed(resqueJob, e)
       },

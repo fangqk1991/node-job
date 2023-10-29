@@ -7,9 +7,9 @@ export const ResqueSdkPlugin = (options: ResqueProtocol): AppPluginProtocol => {
   return {
     appDidLoad: (app) => {
       if (!options.observer && options.jobServer) {
-        options.observer = ResqueObserverHelper.makeTypicalObserver(options.jobServer.CommonJob)
+        options.observer = ResqueObserverHelper.makeTypicalObserver(options.jobServer.CommonJob, options)
       }
-      Resque.addObserver(options.observer || ResqueObserverHelper.makeDefaultObserver())
+      Resque.addObserver(options.observer || ResqueObserverHelper.makeDefaultObserver(options))
 
       for (const plugin of app.plugins) {
         if (plugin.resqueModuleMap) {

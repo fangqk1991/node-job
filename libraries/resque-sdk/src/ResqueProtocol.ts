@@ -9,4 +9,5 @@ export interface ResqueProtocol {
   }
   observer?: IResqueObserver
   jobServer?: JobServer
+  muteTaskNames?: string[]
 }
