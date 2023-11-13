@@ -5,7 +5,7 @@ import { RouteErrorBoundary } from '@fangcha/react'
 import { HomeView } from '../core/HomeView'
 import { MyMenu } from './MyMenu'
 import { TaskPages } from '@web/job-common/admin-api'
-import { JobListView } from '../views/JobListView'
+import { JobListView } from '@fangcha/job-react'
 
 export const MyRouter = createBrowserRouter([
   {
