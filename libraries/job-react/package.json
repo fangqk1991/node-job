@@ -6,8 +6,7 @@
   "author": "fang <me@fangqk.com>",
   "license": "MIT",
   "devDependencies": {
-    "@fangcha/job-models": "workspace:^",
-    "@fangcha/auth-react": "^0.18.0"
+    "@fangcha/job-models": "workspace:^"
   },
   "files": [
     "src/*"

@@ -18,9 +18,9 @@
     "@fangcha/job": "workspace:^",
     "@fangcha/resque": "workspace:^",
     "@fangcha/resque-sdk": "workspace:^",
-    "@fangcha/web-auth-sdk": "^0.8.0",
-    "@fangcha/user-sdk": "^0.18.0",
-    "@fangcha/session": "^0.2.0",
+    "@fangcha/web-auth-sdk": "^0.10.0",
+    "@fangcha/user-sdk": "^0.21.0",
+    "@fangcha/session": "^0.3.0",
     "tunnel": "^0.0.6"
   },
   "devDependencies": {
