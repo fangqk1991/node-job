@@ -1,6 +1,6 @@
 {
   "name": "@fangcha/job-sdk",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Job SDK.",
   "main": "src/index.ts",
   "publishConfig": {
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@fangcha/job-models": "workspace:^",
     "@fangcha/job": "workspace:^",
-    "@fangcha/router": "^0.33.0"
+    "@fangcha/resque": "workspace:^"
   },
   "files": [
     "lib/*",

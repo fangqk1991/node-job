@@ -1,5 +1,6 @@
 import { FCDatabase } from 'fc-sql'
 import { _CommonJob } from './models/_CommonJob'
+import { RedisConfig } from '@fangcha/resque'
 
 interface Options {
   database: FCDatabase
@@ -8,6 +9,8 @@ interface Options {
   tableName_CommonJob?: string
 
   appName?: string
+
+  redisConfig?: RedisConfig
 }
 
 export class JobServer {
