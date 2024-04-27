@@ -1,8 +1,9 @@
 import { FCDatabase } from 'fc-sql'
 import { _CommonJob } from './models/_CommonJob'
 import { RedisConfig } from '@fangcha/resque'
+import { JobCenterOptions } from '@fangcha/job-models'
 
-interface Options {
+interface Options extends Partial<JobCenterOptions> {
   database: FCDatabase
 
   // Default: common_job

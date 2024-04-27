@@ -1,7 +1,7 @@
 import { FangchaApp } from '@fangcha/backend-kit'
 import { GlobalAppConfig } from 'fc-config'
 import { JobConfig } from '../JobConfig'
-import { TaskResqueTaskMapper } from './resque'
+import { TaskResqueTaskMapper } from '../services/resque'
 import { ResqueSdkPlugin } from '@fangcha/resque-sdk'
 import { MyJobServer } from '../services/MyJobServer'
 

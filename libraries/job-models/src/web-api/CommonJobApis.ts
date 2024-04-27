@@ -31,4 +31,9 @@ export const CommonJobApis = {
     ] as SwaggerParameter[],
     description: 'JobCreate',
   } as Api,
+  JobCenterMetadataGet: {
+    method: 'GET',
+    route: '/api/job-sdk/v1/job-center-metadata',
+    description: 'Job Center Metadata Get',
+  },
 }

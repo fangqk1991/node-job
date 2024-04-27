@@ -1,22 +1,33 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MyRequest } from '@fangcha/auth-react'
 import { Divider } from 'antd'
 import { ColumnFilterType, JsonPre, TableView, TableViewColumn, useQueryParams } from '@fangcha/react'
 import { PageResult } from '@fangcha/tools'
 import * as moment from 'moment'
-import { CommonJobApis, CommonJobModel, CommonJobStateDescriptor } from '@fangcha/job-models'
+import { CommonJobApis, CommonJobModel, CommonJobStateDescriptor, JobCenterOptions } from '@fangcha/job-models'
 
 const formatTime = (timeStr: string, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
   return moment(timeStr).format(formatStr)
 }
 
 export const JobListView: React.FC = () => {
-  const [_, reloadData] = useReducer((x) => x + 1, 0)
+  const [metadata, setMetadata] = useState<JobCenterOptions>({
+    queues: [],
+    taskNames: [],
+  })
   const { queryParams, updateQueryParams } = useQueryParams<
     CommonJobModel & {
       'taskState.$inStr': string
+      'taskName.$inStr': string
     }
   >()
+  useEffect(() => {
+    MyRequest(CommonJobApis.JobCenterMetadataGet)
+      .quickSend()
+      .then((response) => {
+        setMetadata(response)
+      })
+  }, [])
 
   return (
     <div>
@@ -39,6 +50,14 @@ export const JobListView: React.FC = () => {
           },
           {
             title: '任务名称',
+            filterType: ColumnFilterType.StrMultiSelector,
+            options: metadata.taskNames.map((item) => ({ label: item, value: item })),
+            value: queryParams['taskName.$inStr'] || '',
+            onValueChanged: (newVal) => {
+              updateQueryParams({
+                'taskName.$inStr': newVal,
+              })
+            },
             render: (item) => item.taskName,
           },
           {

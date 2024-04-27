@@ -14,10 +14,7 @@ export class FCLauncher {
   private readonly _launchFile: string
   private _master: FCMaster
 
-  public constructor(
-    launchFile: string,
-    options: { logFile: string; pidFile: string; queues: string[]; moduleMapFile: string }
-  ) {
+  public constructor(launchFile: string, options: { logFile: string; pidFile: string; queues: string[] }) {
     if (!options.logFile) {
       throw new Error(`logFile error`)
     }

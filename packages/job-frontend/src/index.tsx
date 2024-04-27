@@ -1,15 +1,26 @@
-import ReactDOM from 'react-dom/client'
 import React from 'react'
-import { App } from './app/App'
-import { AuthSdkHelper, SessionProvider } from '@fangcha/auth-react'
+import { LaunchContainer } from '@fangcha/auth-react'
+import { ReactApp } from '@fangcha/react'
+import { MyMenu } from './core/MyMenu'
+import { MainLayout } from './core/MainLayout'
+import { HomeView } from './core/HomeView'
+import { TaskPages } from '@web/job-common/admin-api'
+import { JobListView } from '@fangcha/job-react'
 
-AuthSdkHelper.defaultRedirectUri = '/'
-
-const app = ReactDOM.createRoot(document.getElementById('app')!)
-app.render(
-  <React.StrictMode>
-    <SessionProvider allowAnonymous={true}>
-      <App />
-    </SessionProvider>
-  </React.StrictMode>
-)
+new ReactApp({
+  mainLayout: (
+    <LaunchContainer>
+      <MainLayout menu={MyMenu} />
+    </LaunchContainer>
+  ),
+  routes: [
+    {
+      path: '/',
+      element: <HomeView />,
+    },
+    {
+      path: TaskPages.JobListRoute,
+      element: <JobListView />,
+    },
+  ],
+}).launch()

@@ -1,5 +1,5 @@
 import { SpecFactory } from '@fangcha/router'
-import { CommonJobApis, JobParams } from '@fangcha/job-models'
+import { CommonJobApis, JobCenterOptions, JobParams } from '@fangcha/job-models'
 import { JobServer } from '@fangcha/job'
 import * as assert from '@fangcha/assert'
 import { Resque, ResqueJob } from '@fangcha/resque'
@@ -24,6 +24,33 @@ factory.prepare(CommonJobApis.JobCreate, async (ctx) => {
   await jobServer.CommonJob.saveResqueJobAndEnqueue(resqueJob)
 
   ctx.status = 200
+})
+
+factory.prepare(CommonJobApis.JobCenterMetadataGet, async (ctx) => {
+  const jobServer = ctx.jobServer as JobServer
+  const CommonJob = jobServer.CommonJob
+
+  const options: JobCenterOptions = {
+    queues: jobServer.options.queues || [],
+    taskNames: jobServer.options.taskNames || [],
+  }
+  if (options.queues.length === 0) {
+    const searcher = new CommonJob().fc_searcher()
+    searcher.processor().setColumns(['queue'])
+    searcher.processor().markDistinct()
+    searcher.processor().removeAllOrderRules()
+    const items = await searcher.queryAllFeeds()
+    options.queues = items.map((item) => item.queue)
+  }
+  if (options.taskNames.length === 0) {
+    const searcher = new CommonJob().fc_searcher()
+    searcher.processor().setColumns(['task_name'])
+    searcher.processor().markDistinct()
+    searcher.processor().removeAllOrderRules()
+    const items = await searcher.queryAllFeeds()
+    options.taskNames = items.map((item) => item.taskName)
+  }
+  ctx.body = options
 })
 
 export const CommonJobSpecs = factory.buildSpecs()
