@@ -3,7 +3,6 @@ import { Redis } from 'ioredis'
 import { ResqueJob } from './ResqueJob'
 import { IResqueObserver } from './IResqueObserver'
 import { ResqueTrigger } from './ResqueTrigger'
-import * as assert from 'assert'
 import { RedisConfig } from './RedisConfig'
 
 class _Resque {
@@ -17,20 +16,6 @@ class _Resque {
     this._observers = []
     this._broadcast = new ResqueTrigger()
     this._redisMap = {}
-  }
-
-  /**
-   * @deprecated Use setRedisBackend instead.
-   * @param backend
-   */
-  public setBackend(backend: string) {
-    const [host, port] = backend.split(':')
-    assert.ok(!!host)
-    assert.ok(!!port)
-    this._redisConfig = {
-      redisHost: host,
-      redisPort: Number(port),
-    }
   }
 
   public setRedisBackend(redisConfig: RedisConfig) {

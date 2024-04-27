@@ -16,16 +16,16 @@ export class FCLauncher {
 
   public constructor(
     launchFile: string,
-    options: { redisBackend: string; logFile: string; pidFile: string; queues: string[]; moduleMapFile: string }
+    options: { logFile: string; pidFile: string; queues: string[]; moduleMapFile: string }
   ) {
-    if (!options['logFile']) {
+    if (!options.logFile) {
       throw new Error(`logFile error`)
     }
-    if (!options['pidFile']) {
+    if (!options.pidFile) {
       throw new Error(`pidFile error`)
     }
-    this.logFile = options['logFile']
-    this.pidFile = options['pidFile']
+    this.logFile = options.logFile
+    this.pidFile = options.pidFile
     this._launchFile = launchFile
     this._master = new FCMaster(options)
     this._loadPIDInfo()

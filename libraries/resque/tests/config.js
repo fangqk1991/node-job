@@ -1,7 +1,6 @@
 const config = {
   logFile: `${__dirname}/run.local/resque.log`,
   pidFile: `${__dirname}/run.local/resque.pid`,
-  redisBackend: '127.0.0.1:6379',
   redisConfig: {
     redisHost: '127.0.0.1',
     redisPort: 6379,

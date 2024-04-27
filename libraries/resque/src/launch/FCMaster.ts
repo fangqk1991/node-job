@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import { Resque, ResqueWorker } from '..'
 import { TaskCenter } from '../job/TaskCenter'
 import { RedisConfig } from '../kernel/RedisConfig'
-import * as assert from 'assert'
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -13,26 +12,13 @@ export class FCMaster {
   private readonly _queues: string[]
 
   constructor(options: {
-    /**
-     * @deprecated Use redisConfig instead.
-     */
-    redisBackend?: string
     redisConfig?: RedisConfig
     queues: string[]
     moduleMapFile?: string
     moduleMapData?: { [p: string]: any }
   }) {
-    if (!options.redisBackend && !options.redisConfig) {
-      throw new Error(`redisConfig error`)
-    }
     if (!options.redisConfig) {
-      const [host, port] = options.redisBackend!.split(':')
-      assert.ok(!!host)
-      assert.ok(!!port)
-      options.redisConfig = {
-        redisHost: host,
-        redisPort: Number(port),
-      }
+      throw new Error(`redisConfig error`)
     }
     if (!Array.isArray(options.queues)) {
       throw new Error(`queues error`)
