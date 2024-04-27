@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { MyRequest } from '@fangcha/auth-react'
-import { Divider } from 'antd'
+import { Button, Divider } from 'antd'
 import { ColumnFilterType, JsonPre, TableView, TableViewColumn, useQueryParams } from '@fangcha/react'
-import { PageResult } from '@fangcha/tools'
-import * as moment from 'moment'
+import { FT, PageResult } from '@fangcha/tools'
 import { CommonJobApis, CommonJobModel, CommonJobStateDescriptor, JobCenterOptions } from '@fangcha/job-models'
-
-const formatTime = (timeStr: string, formatStr = 'YYYY-MM-DD HH:mm:ss') => {
-  return moment(timeStr).format(formatStr)
-}
+import { ProForm } from '@ant-design/pro-components'
 
 export const JobListView: React.FC = () => {
   const [metadata, setMetadata] = useState<JobCenterOptions>({
     queues: [],
     taskNames: [],
   })
-  const { queryParams, updateQueryParams } = useQueryParams<
+  const { queryParams, updateQueryParams, setQueryParams } = useQueryParams<
     CommonJobModel & {
-      'taskState.$inStr': string
-      'taskName.$inStr': string
+      'taskState.$in': string
+      'taskName.$in': string
     }
   >()
   useEffect(() => {
@@ -31,8 +27,21 @@ export const JobListView: React.FC = () => {
 
   return (
     <div>
-      <h2>任务列表</h2>
+      <h3>任务列表</h3>
       <Divider />
+      <ProForm autoFocusFirstInput={false} submitter={false}>
+        <ProForm.Group>
+          <ProForm.Item>
+            <Button
+              onClick={() => {
+                setQueryParams({})
+              }}
+            >
+              重置过滤器
+            </Button>
+          </ProForm.Item>
+        </ProForm.Group>
+      </ProForm>
       <TableView
         rowKey={(item: CommonJobModel) => {
           return item.jobId
@@ -52,10 +61,10 @@ export const JobListView: React.FC = () => {
             title: '任务名称',
             filterType: ColumnFilterType.StrMultiSelector,
             options: metadata.taskNames.map((item) => ({ label: item, value: item })),
-            value: queryParams['taskName.$inStr'] || '',
+            value: queryParams['taskName.$in'] || '',
             onValueChanged: (newVal) => {
               updateQueryParams({
-                'taskName.$inStr': newVal,
+                'taskName.$in': newVal,
               })
             },
             render: (item) => item.taskName,
@@ -68,10 +77,10 @@ export const JobListView: React.FC = () => {
             title: '状态',
             filterType: ColumnFilterType.StrMultiSelector,
             options: CommonJobStateDescriptor.options(),
-            value: queryParams['taskState.$inStr'] || '',
+            value: queryParams['taskState.$in'] || '',
             onValueChanged: (newVal) => {
               updateQueryParams({
-                'taskState.$inStr': newVal,
+                'taskState.$in': newVal,
               })
             },
             render: (item) => item.taskState,
@@ -97,24 +106,18 @@ export const JobListView: React.FC = () => {
             title: '创建时间 / 更新时间',
             render: (item) => (
               <>
-                {formatTime(item.createTime)}
+                {FT(item.createTime)}
                 <br />
-                {formatTime(item.updateTime)}
+                {FT(item.updateTime)}
               </>
             ),
           },
         ])}
-        defaultSettings={{
-          pageSize: 10,
-          sortKey: 'createdAt',
-          sortDirection: 'descending',
-        }}
         loadData={async (retainParams) => {
           const request = MyRequest(CommonJobApis.JobPageDataGet)
           request.setQueryParams({
             ...retainParams,
             ...queryParams,
-            'taskState.$inStr': queryParams['taskState.$inStr'] || undefined,
           })
           return request.quickSend<PageResult<CommonJobModel>>()
         }}

@@ -12,6 +12,9 @@ module.exports = new WebpackBuilder()
       proxy: {
         '/api': `http://localhost:${config.Job.adminPort}`,
       },
+      client: {
+        overlay: false,
+      },
     },
   })
   .build()
