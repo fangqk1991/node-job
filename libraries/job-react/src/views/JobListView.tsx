@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { MyRequest } from '@fangcha/auth-react'
-import { Button, Divider } from 'antd'
+import { Button, Divider, message, Space } from 'antd'
 import { ColumnFilterType, JsonPre, TableView, TableViewColumn, useQueryParams } from '@fangcha/react'
 import { FT, PageResult } from '@fangcha/tools'
 import { CommonJobApis, CommonJobModel, CommonJobStateDescriptor, JobCenterOptions } from '@fangcha/job-models'
 import { ProForm } from '@ant-design/pro-components'
+import { JobDialog } from './JobDialog'
 
 export const JobListView: React.FC = () => {
   const [metadata, setMetadata] = useState<JobCenterOptions>({
@@ -24,6 +25,7 @@ export const JobListView: React.FC = () => {
         setMetadata(response)
       })
   }, [])
+  const [_, reloadData] = useReducer((x) => x + 1, 0)
 
   return (
     <div>
@@ -31,6 +33,22 @@ export const JobListView: React.FC = () => {
       <Divider />
       <ProForm autoFocusFirstInput={false} submitter={false}>
         <ProForm.Group>
+          <ProForm.Item>
+            <Button
+              type={'primary'}
+              onClick={() => {
+                const dialog = new JobDialog({})
+                dialog.show(async (params) => {
+                  const request = MyRequest(CommonJobApis.JobCreate)
+                  request.setBodyData(params)
+                  await request.quickSend()
+                  reloadData()
+                })
+              }}
+            >
+              创建任务
+            </Button>
+          </ProForm.Item>
           <ProForm.Item>
             <Button
               onClick={() => {
@@ -110,6 +128,32 @@ export const JobListView: React.FC = () => {
                 <br />
                 {FT(item.updateTime)}
               </>
+            ),
+          },
+          {
+            title: '操作',
+            render: (item) => (
+              <Space>
+                <a
+                  onClick={() => {
+                    const dialog = new JobDialog({
+                      jobParams: {
+                        queue: item.queue,
+                        taskName: item.taskName,
+                        params: item.params,
+                      },
+                    })
+                    dialog.show(async (params) => {
+                      const request = MyRequest(CommonJobApis.JobCreate)
+                      request.setBodyData(params)
+                      await request.quickSend()
+                      reloadData()
+                    })
+                  }}
+                >
+                  复制
+                </a>
+              </Space>
             ),
           },
         ])}

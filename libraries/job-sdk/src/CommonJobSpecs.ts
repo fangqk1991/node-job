@@ -19,6 +19,10 @@ factory.prepare(CommonJobApis.JobCreate, async (ctx) => {
   Resque.setRedisBackend(redisConfig!)
 
   const params = ctx.request.body as JobParams
+  params.params = params.params || {}
+
+  assert.ok(!!params.queue, 'queue missing.')
+  assert.ok(!!params.taskName, 'taskName missing.')
 
   const resqueJob = ResqueJob.generate(params.queue, params.taskName, params.params)
   await jobServer.CommonJob.saveResqueJobAndEnqueue(resqueJob)
